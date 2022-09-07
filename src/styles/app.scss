@@ -4,6 +4,9 @@
 
 // Pages
 @import "../pages/start/start-page";
+@import "../pages/play/play-page";
 
 // Components
-@import "../components/app/app"
+@import "../components/app/app";
+@import "../components/exit-game/exit-game";
+@import "../components/chess-board/chess-board";
