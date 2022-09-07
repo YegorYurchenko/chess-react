@@ -7,7 +7,7 @@ interface IChessBoardFields {
 /** Шахматная доска */
 const ChessBoardFields: FC<IChessBoardFields> = ({ reverse }) => {
 
-    // Классы
+    // Стили
     const chessBoardColumnClasses = `chess-board__column ${reverse ? classes.reverse : ''}`
     const chessBoardRowClasses = `chess-board__row ${reverse ? classes.reverse : ''}`
 
