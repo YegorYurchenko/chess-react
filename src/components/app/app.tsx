@@ -1,13 +1,13 @@
-import React from 'react'
+import { FC } from 'react'
 import { useSelector } from 'react-redux'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import PlayPage from '../../pages/play/play-page'
 import StartPage from '../../pages/start/start-page'
 import { RootState } from '../../redux/store'
-import { isMobile } from '../../utils'
+import { isMobile } from '../../utils/utils'
 
 /** */
-const App: React.FC = () => {
+const App: FC = () => {
 
     const gameIsActive = useSelector((state: RootState) => state.gameSlice.active)
 

@@ -1,11 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 export interface IGameState {
-    active: boolean
+    active: boolean,
+    sound: boolean
 }
 
 const initialState: IGameState = {
-    active: false
+    active: false,
+    sound: true
 }
 
 export const gameSlice = createSlice({
@@ -17,10 +19,16 @@ export const gameSlice = createSlice({
         },
         deactivateGame: (state) => {
             state.active = false
+        },
+        activateSound: (state) => {
+            state.sound = true
+        },
+        deactivateSound: (state) => {
+            state.sound = false
         }
     }
 })
 
-export const { activateGame, deactivateGame } = gameSlice.actions
+export const { activateGame, deactivateGame, activateSound, deactivateSound } = gameSlice.actions
 
 export default gameSlice.reducer
