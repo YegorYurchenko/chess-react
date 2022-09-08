@@ -11,11 +11,12 @@ import { ChessBoardClass, IChessPieces } from '../../models/chessBoard'
 const ChessBoard: FC = () => {
 
     const selectedMainColor = useSelector((state: RootState) => state.colorSlice.color)
-    const [reverse] = useState<boolean>(selectedMainColor === EPieceColors.black)
+    const [reverse, setReverse] = useState<boolean>(selectedMainColor === EPieceColors.black)
 
     const [chessBoard, setChessBoard] = useState<IChessPieces[][]>()
-    const [selectedPiecePosition, setSelectedPiecePosition] = useState<string>('')
-    const [selectedColor] = useState<EPieceColors>(selectedMainColor)
+    const [selectedPiecePosition, setSelectedPiecePosition] = useState<string>('') // Позиция выбранной фигуры
+    const [currentColor, setCurrentColor] = useState<EPieceColors>(selectedMainColor) // Цвет активных фигур в текущем ходе
+    const [availableSpaces, setAvailableSpaces] = useState<string[]>([]) // Список доступных ходов для выбранной фигуры
 
     useEffect(() => {
         (() => new ChessBoardClass(reverse))()
@@ -34,15 +35,32 @@ const ChessBoard: FC = () => {
 
         // Выбранная фигура
         const currentSelectedPiece = ChessBoardClass.chessBoardObject[selectedChessPiecePosition]
-        if (currentSelectedPiece && selectedColor === currentSelectedPiece.color) {
+
+        if (selectedPiecePosition === selectedChessPiecePosition) { // Клик на ту же фигуру ==> отменяем активность фигуры
+            setSelectedPiecePosition('')
+            setAvailableSpaces([])
+
+        } else if (currentSelectedPiece && currentColor === currentSelectedPiece.color) { // Выбрана фигура
+
             selectedPiecePosition === currentSelectedPiece.position
                 ? setSelectedPiecePosition('')
                 : setSelectedPiecePosition(currentSelectedPiece.position)
+
+            setAvailableSpaces(currentSelectedPiece.getAvailableSpace(reverse))
+
+        } else if (availableSpaces.includes(selectedChessPiecePosition)) { // Делаем ход
+
+            ChessBoardClass.chessBoardObject[selectedPiecePosition].move(selectedChessPiecePosition)
+
+            setSelectedPiecePosition('')
+            setAvailableSpaces([])
+            setCurrentColor(currentColor === EPieceColors.white ? EPieceColors.black : EPieceColors.white)
+            setReverse(! reverse)
         }
     }
 
     // Стили
-    const chessBoardClasses = `chess-board__list ${reverse ? classes.reverse : ''}`
+    const chessBoardClasses = `chess-board__list ${selectedMainColor === EPieceColors.black ? classes.reverse : ''}`
 
     return (
         <div className="chess-board">
@@ -51,16 +69,17 @@ const ChessBoard: FC = () => {
                     return column.map(field => (
                         <ChessBoardItem
                             key={field.chessPosition}
-                            chessPosition={field.chessPiece?.position || field.chessPosition}
+                            chessPosition={field.chessPosition}
                             chessPiece={field.chessPiece?.type || EChessBoardPieces.no}
                             chessPieceColor={field.chessPiece?.color || EPieceColors.no}
-                            active={selectedPiecePosition === field.chessPosition && selectedColor === field.chessPiece?.color}
+                            active={selectedPiecePosition === field.chessPosition && currentColor === field.chessPiece?.color}
+                            availableSpace={availableSpaces.includes(field.chessPosition)}
                         />
                     ))
                 })}
             </ul>
 
-            <ChessBoardFields reverse={reverse} />
+            <ChessBoardFields reverse={selectedMainColor === EPieceColors.black} />
         </div>
     )
 }

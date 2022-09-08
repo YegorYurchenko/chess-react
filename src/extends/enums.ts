@@ -13,3 +13,7 @@ export enum EChessBoardPieces {
     pawn = 'pawn',
     no = ''
 }
+
+export enum EChessPieceFields {
+    A, B, C, D, E, F, G, H
+}

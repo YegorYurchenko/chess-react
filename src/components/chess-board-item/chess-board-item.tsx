@@ -5,11 +5,12 @@ interface IChessPiece {
     chessPosition: string,
     chessPiece: EChessBoardPieces,
     chessPieceColor: EPieceColors,
-    active: boolean
+    active: boolean,
+    availableSpace: boolean
 }
 
 /** Поле шахматной доски */
-const ChessBoardItem: FC<IChessPiece> = ({ chessPosition, chessPiece, chessPieceColor, active }) => {
+const ChessBoardItem: FC<IChessPiece> = ({ chessPosition, chessPiece, chessPieceColor, active, availableSpace }) => {
     return (
         <li className={`chess-board__item ${active ? classes.active : ''}`} data-position={chessPosition}>
 
@@ -19,6 +20,11 @@ const ChessBoardItem: FC<IChessPiece> = ({ chessPosition, chessPiece, chessPiece
                     data-position={chessPosition}
                     className="chess-board__item-piece-img"
                 />
+            }
+
+            {
+                availableSpace &&
+                <span className="chess-board__item-possible"></span>
             }
 
         </li>
