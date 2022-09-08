@@ -4,7 +4,7 @@
 
 При работе со сборкой использовался [Node.js](https://nodejs.org/en/) версии [16.17.0](https://nodejs.org/download/release/v16.17.0/)
 
-Используемые технологии: React 18 (Hooks), React Router, TypeScript, SCSS
+Используемые технологии: React 18 (Hooks), Redux Toolkit, React Router, TypeScript, SCSS
 
 ## Установка
 
