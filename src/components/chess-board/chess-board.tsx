@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useEffect, useState, MouseEvent } from 'react'
+import useSound from 'use-sound'
 import { useSelector } from 'react-redux'
 import { EChessBoardPieces, EPieceColors } from '../../extends/enums'
 import { RootState } from '../../redux/store'
@@ -17,6 +18,12 @@ const ChessBoard: FC = () => {
     const [selectedPiecePosition, setSelectedPiecePosition] = useState<string>('') // Позиция выбранной фигуры
     const [currentColor, setCurrentColor] = useState<EPieceColors>(selectedMainColor) // Цвет активных фигур в текущем ходе
     const [availableSpaces, setAvailableSpaces] = useState<string[]>([]) // Список доступных ходов для выбранной фигуры
+
+    const soundIsActive = useSelector((state: RootState) => state.gameSlice.sound)
+    const [chessPieceMoveSound] = useSound(
+        '/sounds/chessMove.mp3',
+        { volume: 1 }
+    )
 
     useEffect(() => {
         (() => new ChessBoardClass(reverse))()
@@ -51,6 +58,8 @@ const ChessBoard: FC = () => {
         } else if (availableSpaces.includes(selectedChessPiecePosition)) { // Делаем ход
 
             ChessBoardClass.chessBoardObject[selectedPiecePosition].move(selectedChessPiecePosition)
+
+            soundIsActive && chessPieceMoveSound()
 
             setSelectedPiecePosition('')
             setAvailableSpaces([])
