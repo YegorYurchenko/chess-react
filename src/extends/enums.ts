@@ -1,4 +1,4 @@
-export enum EFigureColors {
+export enum EPieceColors {
     white = 'white',
     black = 'black',
     no = ''

@@ -1,4 +1,4 @@
-import { EChessBoardPieces, EFigureColors } from '../extends/enums'
+import { EChessBoardPieces, EPieceColors } from '../extends/enums'
 
 interface IChessPiece {
     getAvailableSpace(): string[]
@@ -8,11 +8,11 @@ interface IChessPiece {
 export abstract class ChessPiece implements IChessPiece {
 
     protected _type: EChessBoardPieces
-    protected _color: EFigureColors
+    protected _color: EPieceColors
     protected _position: string
 
     /** @constructor */
-    constructor(type: EChessBoardPieces, color: EFigureColors, position: string) {
+    constructor(type: EChessBoardPieces, color: EPieceColors, position: string) {
         this._type = type
         this._color = color
         this._position = position
@@ -24,18 +24,13 @@ export abstract class ChessPiece implements IChessPiece {
     }
 
     /** Color getter */
-    get color(): EFigureColors {
+    get color(): EPieceColors {
         return this._color
     }
 
     /** Position getter */
     get position(): string {
         return this._position
-    }
-
-    /** Position setter */
-    set position(pos) {
-        this._position = pos
     }
 
     abstract getAvailableSpace(): string[]

@@ -2,7 +2,7 @@
 import { FC, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { EFigureColors } from '../../extends/enums'
+import { EPieceColors } from '../../extends/enums'
 import { setMainWhiteColor, setMainBlackColor } from '../../redux/slices/colorSlice'
 import { activateGame } from '../../redux/slices/gameSlice'
 import { RootState } from '../../redux/store'
@@ -22,8 +22,8 @@ const StartPage: FC = () => {
     }, [gameIsActive])
 
     // Если цвет выбран, то активна соответствующая кнопка
-    const whiteBtnClasses = `start-page__btn start-page__btn_white ${selectedColor === EFigureColors.white ? classes.active : ''}`
-    const blackBtnClasses = `start-page__btn start-page__btn_black ${selectedColor === EFigureColors.black ? classes.active : ''}`
+    const whiteBtnClasses = `start-page__btn start-page__btn_white ${selectedColor === EPieceColors.white ? classes.active : ''}`
+    const blackBtnClasses = `start-page__btn start-page__btn_black ${selectedColor === EPieceColors.black ? classes.active : ''}`
 
     // Если цвет выбран, то кнопка Submit активна
     const submitBtnClasses = `start-page__submit ${selectedColor ? classes.active : ''}`

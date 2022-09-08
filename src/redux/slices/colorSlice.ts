@@ -1,14 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { EFigureColors } from '../../extends/enums'
+import { EPieceColors } from '../../extends/enums'
 
 export interface IColorState {
-    color: EFigureColors,
-    currentColor: EFigureColors
+    color: EPieceColors,
+    currentColor: EPieceColors
 }
 
 const initialState: IColorState = {
-    color: EFigureColors.no,
-    currentColor: EFigureColors.no
+    color: EPieceColors.no,
+    currentColor: EPieceColors.no
 }
 
 export const colorSlice = createSlice({
@@ -16,16 +16,16 @@ export const colorSlice = createSlice({
     initialState,
     reducers: {
         setMainWhiteColor: (state) => {
-            state.color = EFigureColors.white
-            state.currentColor = EFigureColors.white
+            state.color = EPieceColors.white
+            state.currentColor = EPieceColors.white
         },
         setMainBlackColor: (state) => {
-            state.color = EFigureColors.black
-            state.currentColor = EFigureColors.black
+            state.color = EPieceColors.black
+            state.currentColor = EPieceColors.black
         },
         resetColor: (state) => {
-            state.color = EFigureColors.no
-            state.currentColor = EFigureColors.no
+            state.color = EPieceColors.no
+            state.currentColor = EPieceColors.no
         }
     }
 })
