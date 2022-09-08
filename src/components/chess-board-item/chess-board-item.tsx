@@ -1,13 +1,16 @@
 import { FC, memo } from 'react'
-import { IChessPieces } from '../../utils/getChessBoard'
+import { EChessBoardPieces, EFigureColors } from '../../extends/enums'
+
+interface IChessPiece {
+    chessPosition: string,
+    chessPiece: EChessBoardPieces,
+    chessPieceColor: EFigureColors
+}
 
 /** Поле шахматной доски */
-const ChessBoardItem: FC<IChessPieces> = ({ chessPosition, chessPiece, chessPieceColor }) => {
+const ChessBoardItem: FC<IChessPiece> = ({ chessPosition, chessPiece, chessPieceColor }) => {
     return (
-        <li className="chess-board__item"
-            data-position={chessPosition}
-            data-color={chessPieceColor}
-            data-piece={chessPiece}>
+        <li className="chess-board__item" data-position={chessPosition}>
 
             {chessPiece &&
                 <img src={`/images/${chessPieceColor}/${chessPiece}.png`}
