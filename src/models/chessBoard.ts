@@ -21,7 +21,6 @@ export class ChessBoardClass {
 
         const chessBoardObjectTemporary = chessBoardArray.reduce((curr, next) => curr.concat(next))
         chessBoardObjectTemporary.forEach(field => ChessBoardClass.chessBoardObject[field.chessPosition] = field.chessPiece)
-
     }
 }
 

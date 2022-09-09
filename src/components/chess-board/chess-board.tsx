@@ -20,6 +20,7 @@ const ChessBoard: FC = () => {
     const [availableSpaces, setAvailableSpaces] = useState<string[]>([]) // Список доступных ходов для выбранной фигуры
 
     const soundIsActive = useSelector((state: RootState) => state.gameSlice.sound)
+
     const [chessPieceMoveSound] = useSound(
         '/sounds/chessMove.mp3',
         { volume: 1 }
@@ -35,19 +36,19 @@ const ChessBoard: FC = () => {
     const onChessPieceListClick = (e: MouseEvent): void => {
         const selectedChessPiece = e.target as Element
 
-        // Позиция выбранной фигуры
-        const selectedChessPiecePosition = selectedChessPiece.getAttribute('data-position')
+        // Позиция выбранной фигуры / пустого поля
+        const selectedChessFieldPosition = selectedChessPiece.getAttribute('data-position')
 
-        if (! selectedChessPiecePosition) return
+        if (! selectedChessFieldPosition) return
 
         // Выбранная фигура
-        const currentSelectedPiece = ChessBoardClass.chessBoardObject[selectedChessPiecePosition]
+        const currentSelectedPiece = ChessBoardClass.chessBoardObject[selectedChessFieldPosition]
 
-        if (selectedPiecePosition === selectedChessPiecePosition) { // Клик на ту же фигуру ==> отменяем активность фигуры
+        if (selectedPiecePosition === selectedChessFieldPosition) { // Клик на ту же фигуру ==> отменяем активность фигуры
             setSelectedPiecePosition('')
             setAvailableSpaces([])
 
-        } else if (currentSelectedPiece && currentColor === currentSelectedPiece.color) { // Выбрана фигура
+        } else if (currentSelectedPiece && currentColor === currentSelectedPiece.color) { // Выбор новой активной фигуры
 
             selectedPiecePosition === currentSelectedPiece.position
                 ? setSelectedPiecePosition('')
@@ -55,17 +56,22 @@ const ChessBoard: FC = () => {
 
             setAvailableSpaces(currentSelectedPiece.getAvailableSpace(reverse))
 
-        } else if (availableSpaces.includes(selectedChessPiecePosition)) { // Делаем ход
+        } else if (availableSpaces.includes(selectedChessFieldPosition)) { // Делаем ход
 
-            ChessBoardClass.chessBoardObject[selectedPiecePosition]?.move(selectedChessPiecePosition)
-
-            soundIsActive && chessPieceMoveSound()
-
-            setSelectedPiecePosition('')
-            setAvailableSpaces([])
-            setCurrentColor(currentColor === EPieceColors.white ? EPieceColors.black : EPieceColors.white)
-            setReverse(! reverse)
+            makeMove(selectedChessFieldPosition)
         }
+    }
+
+    /** Сделать ход */
+    const makeMove = (moveToPosition: string): void => {
+
+        ChessBoardClass.chessBoardObject[selectedPiecePosition]?.move(moveToPosition)
+        soundIsActive && chessPieceMoveSound()
+
+        setSelectedPiecePosition('')
+        setAvailableSpaces([])
+        setCurrentColor(currentColor === EPieceColors.white ? EPieceColors.black : EPieceColors.white)
+        setReverse(! reverse)
     }
 
     /** Создание игрового поля */
