@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FC, useEffect, useState, MouseEvent } from 'react'
+import { FC, useEffect, useState, MouseEvent, ReactElement } from 'react'
 import useSound from 'use-sound'
 import { useSelector } from 'react-redux'
-import { EChessBoardPieces, EPieceColors } from '../../extends/enums'
+import { EPieceColors } from '../../extends/enums'
 import { RootState } from '../../redux/store'
 import ChessBoardFields from '../chess-board-fields/chess-board-fields'
 import ChessBoardItem from '../chess-board-item/chess-board-item'
-import { ChessBoardClass, IChessPieces } from '../../models/chessBoard'
+import { ChessBoardClass, IChessPiecesObject } from '../../models/chessBoard'
 
 /** Шахматная доска */
 const ChessBoard: FC = () => {
@@ -14,7 +14,7 @@ const ChessBoard: FC = () => {
     const selectedMainColor = useSelector((state: RootState) => state.colorSlice.color)
     const [reverse, setReverse] = useState<boolean>(selectedMainColor === EPieceColors.black)
 
-    const [chessBoard, setChessBoard] = useState<IChessPieces[][]>()
+    const [chessBoard, setChessBoard] = useState<IChessPiecesObject>({})
     const [selectedPiecePosition, setSelectedPiecePosition] = useState<string>('') // Позиция выбранной фигуры
     const [currentColor, setCurrentColor] = useState<EPieceColors>(selectedMainColor) // Цвет активных фигур в текущем ходе
     const [availableSpaces, setAvailableSpaces] = useState<string[]>([]) // Список доступных ходов для выбранной фигуры
@@ -28,7 +28,7 @@ const ChessBoard: FC = () => {
     useEffect(() => {
         (() => new ChessBoardClass(reverse))()
 
-        setChessBoard(ChessBoardClass.chessBoardArray)
+        setChessBoard(ChessBoardClass.chessBoardObject)
     }, [])
 
     /** Обрабатываем нажатие на шахматную доску */
@@ -57,7 +57,7 @@ const ChessBoard: FC = () => {
 
         } else if (availableSpaces.includes(selectedChessPiecePosition)) { // Делаем ход
 
-            ChessBoardClass.chessBoardObject[selectedPiecePosition].move(selectedChessPiecePosition)
+            ChessBoardClass.chessBoardObject[selectedPiecePosition]?.move(selectedChessPiecePosition)
 
             soundIsActive && chessPieceMoveSound()
 
@@ -68,24 +68,32 @@ const ChessBoard: FC = () => {
         }
     }
 
+    /** Создание игрового поля */
+    const createChessBoard = (): ReactElement[] => {
+        const fields: ReactElement[] = []
+
+        for (const position in chessBoard) {
+            fields.push(
+                <ChessBoardItem
+                    key={position}
+                    position={position}
+                    chessPiece={chessBoard[position]}
+                    active={selectedPiecePosition === position && currentColor === chessBoard[position]?.color}
+                    availableSpace={availableSpaces.includes(position)}
+                />
+            )
+        }
+
+        return fields
+    }
+
     // Стили
     const chessBoardClasses = `chess-board__list ${selectedMainColor === EPieceColors.black ? classes.reverse : ''}`
 
     return (
         <div className="chess-board">
             <ul className={chessBoardClasses} onClick={onChessPieceListClick}>
-                {chessBoard?.map(column => {
-                    return column.map(field => (
-                        <ChessBoardItem
-                            key={field.chessPosition}
-                            chessPosition={field.chessPosition}
-                            chessPiece={field.chessPiece?.type || EChessBoardPieces.no}
-                            chessPieceColor={field.chessPiece?.color || EPieceColors.no}
-                            active={selectedPiecePosition === field.chessPosition && currentColor === field.chessPiece?.color}
-                            availableSpace={availableSpaces.includes(field.chessPosition)}
-                        />
-                    ))
-                })}
+                { createChessBoard() }
             </ul>
 
             <ChessBoardFields reverse={selectedMainColor === EPieceColors.black} />

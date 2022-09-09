@@ -6,17 +6,20 @@ export interface IChessPieces {
     chessPiece: ChessPiece | null
 }
 
+export interface IChessPiecesObject {
+    [key: string]: ChessPiece | null
+}
+
 /** Общий класс доски */
 export class ChessBoardClass {
 
-    static chessBoardArray: IChessPieces[][]
-    static chessBoardObject = {} // { 'A1': Rook, ... }
+    static chessBoardObject: IChessPiecesObject = {} // { 'A1': Rook, ... }
 
     /** @constructor */
     constructor(reverse = false) {
-        ChessBoardClass.chessBoardArray = getResultChessBoard(reverse)
+        const chessBoardArray = getResultChessBoard(reverse)
 
-        const chessBoardObjectTemporary = ChessBoardClass.chessBoardArray.reduce((curr, next) => curr.concat(next))
+        const chessBoardObjectTemporary = chessBoardArray.reduce((curr, next) => curr.concat(next))
         chessBoardObjectTemporary.forEach(field => ChessBoardClass.chessBoardObject[field.chessPosition] = field.chessPiece)
 
     }

@@ -40,7 +40,7 @@ export abstract class ChessPiece implements IChessPiece {
     }
 
     /** Получить данные поля */
-    getNewField(addColumn: number, addRow: number): [ChessPiece, string] {
+    getNewField(addColumn: number, addRow: number): [ChessPiece | null, string] {
 
         const [column, row] = this.position.split('')
 
@@ -48,7 +48,7 @@ export abstract class ChessPiece implements IChessPiece {
         const newRow = Number(row) + addRow
 
         const newPiecePosition = `${newColumn}${newRow}`
-        const newPiece = ChessBoardClass.chessBoardObject[newPiecePosition]
+        const newPiece: ChessPiece | null = ChessBoardClass.chessBoardObject[newPiecePosition]
 
         return [newPiece, newPiecePosition]
     }
@@ -85,18 +85,6 @@ export abstract class ChessPiece implements IChessPiece {
 
     /** Делаем ход */
     move(newPosition: string): void {
-
-        ChessBoardClass.chessBoardArray.forEach(column => {
-            column.forEach(row => {
-                switch (row.chessPosition) {
-                    case newPosition:
-                        row.chessPiece = this
-                        break
-                    case this.position:
-                        row.chessPiece = null
-                }
-            })
-        })
 
         ChessBoardClass.chessBoardObject[newPosition] = this
         ChessBoardClass.chessBoardObject[this.position] = null

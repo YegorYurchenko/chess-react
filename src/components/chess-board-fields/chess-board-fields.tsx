@@ -4,7 +4,7 @@ interface IChessBoardFields {
     reverse: boolean
 }
 
-/** Шахматная доска */
+/** Поля шахматной доски */
 const ChessBoardFields: FC<IChessBoardFields> = ({ reverse }) => {
 
     // Стили
