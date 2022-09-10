@@ -30,6 +30,10 @@ const ChessBoard: FC = () => {
         (() => new ChessBoardClass(reverse))()
 
         setChessBoard(ChessBoardClass.chessBoardObject)
+
+        return () => {
+            ChessBoardClass.chessBoardObject = {}
+        }
     }, [])
 
     /** Обрабатываем нажатие на шахматную доску */
