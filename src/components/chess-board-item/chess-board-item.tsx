@@ -13,7 +13,8 @@ const ChessBoardItem: FC<IChessPiece> = ({ position, chessPiece, active, availab
     return (
         <li className={`chess-board__item ${active ? classes.active : ''}`} data-position={position}>
 
-            {chessPiece?.type &&
+            {
+                chessPiece?.type &&
                 <img src={`/images/${chessPiece.color}/${chessPiece.type}.png`}
                     alt={chessPiece.type}
                     data-position={chessPiece.position}

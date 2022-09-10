@@ -42,7 +42,7 @@ const ChessBoard: FC = () => {
         if (! selectedChessFieldPosition) return
 
         // Выбранная фигура
-        const currentSelectedPiece = ChessBoardClass.chessBoardObject[selectedChessFieldPosition]
+        const currentSelectedPiece = chessBoard[selectedChessFieldPosition]
 
         if (selectedPiecePosition === selectedChessFieldPosition) { // Клик на ту же фигуру ==> отменяем активность фигуры
             setSelectedPiecePosition('')
@@ -65,7 +65,7 @@ const ChessBoard: FC = () => {
     /** Сделать ход */
     const makeMove = (moveToPosition: string): void => {
 
-        ChessBoardClass.chessBoardObject[selectedPiecePosition]?.move(moveToPosition)
+        chessBoard[selectedPiecePosition]?.move(moveToPosition)
         soundIsActive && chessPieceMoveSound()
 
         setSelectedPiecePosition('')

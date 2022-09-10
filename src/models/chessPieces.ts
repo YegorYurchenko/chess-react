@@ -1,7 +1,8 @@
-import { EChessBoardPieces, EChessPieceFields, EPieceColors } from '../extends/enums'
+import { EChessBoardPieces, EPieceColors } from '../extends/enums'
 import { ChessBoardClass } from './chessBoard'
 
 interface IChessPiece {
+    move(newPosition: string): void,
     getAvailableSpace(reverse: boolean): string[]
 }
 
@@ -39,50 +40,6 @@ export abstract class ChessPiece implements IChessPiece {
         this._position = position
     }
 
-    /** Получить данные поля */
-    getNewField(addColumn: number, addRow: number): [ChessPiece | null, string] {
-
-        const [column, row] = this.position.split('')
-
-        const newColumn = EChessPieceFields[EChessPieceFields[column] + addColumn]
-        const newRow = Number(row) + addRow
-
-        const newPiecePosition = `${newColumn}${newRow}`
-        const newPiece: ChessPiece | null = ChessBoardClass.chessBoardObject[newPiecePosition]
-
-        return [newPiece, newPiecePosition]
-    }
-
-    /** Получить данные нескольких полей */
-    getNewFields(movePositions: number[][]): string[] {
-
-        const result: string[] = []
-
-        movePositions.forEach(([addColumn, addRow]) => {
-
-            let available = true
-            let [updatedAddColumn, updatedAddRow] = [addColumn, addRow]
-
-            do {
-                const [piece, newPiecePosition] = this.getNewField(updatedAddColumn, updatedAddRow)
-
-                if (piece !== undefined && ! piece) {
-                    result.push(newPiecePosition)
-                    updatedAddColumn += addColumn
-                    updatedAddRow += addRow
-                } else if (piece && piece.color !== this.color) {
-                    result.push(newPiecePosition)
-                    available = false
-                } else {
-                    available = false
-                }
-
-            } while (available)
-        })
-
-        return result
-    }
-
     /** Делаем ход */
     move(newPosition: string): void {
 
@@ -110,7 +67,7 @@ export class Pawn extends ChessPiece {
         [[0, 2], [0, 1]].forEach(([addColumn, addRow], idx) => {
             if (this._hasMoved && ! idx) return
 
-            const [piece, newPiecePosition] = this.getNewField(reverse ? -addColumn : addColumn, reverse ? -addRow : addRow)
+            const [piece, newPiecePosition] = ChessBoardClass.getNewField(this.position, reverse ? -addColumn : addColumn, reverse ? -addRow : addRow)
 
             if (piece !== undefined && ! piece) result.push(newPiecePosition)
         });
@@ -118,7 +75,7 @@ export class Pawn extends ChessPiece {
         // Атака противника
         [[-1, 1], [1, 1]].forEach(([addColumn, addRow]) => {
 
-            const [piece, newPiecePosition] = this.getNewField(reverse ? -addColumn : addColumn, reverse ? -addRow : addRow)
+            const [piece, newPiecePosition] = ChessBoardClass.getNewField(this.position, reverse ? -addColumn : addColumn, reverse ? -addRow : addRow)
 
             if (piece && piece.color !== this.color) result.push(newPiecePosition)
         })
@@ -145,7 +102,7 @@ export class Knight extends ChessPiece {
         // Свободное поле или атака
         [[-1, -2], [-1, 2], [-2, -1], [-2, 1], [1, -2], [1, 2], [2, -1], [2, 1]].forEach(([addColumn, addRow]) => {
 
-            const [piece, newPiecePosition] = this.getNewField(reverse ? -addColumn : addColumn, reverse ? -addRow : addRow)
+            const [piece, newPiecePosition] = ChessBoardClass.getNewField(this.position, reverse ? -addColumn : addColumn, reverse ? -addRow : addRow)
 
             if ((piece !== undefined && ! piece) || (piece && piece.color !== this.color)) result.push(newPiecePosition)
         })
@@ -161,7 +118,7 @@ export class Bishop extends ChessPiece {
     getAvailableSpace(): string[] {
 
         // Свободное поле или атака
-        return this.getNewFields([[-1, -1], [-1, 1], [1, -1], [1, 1]])
+        return ChessBoardClass.getNewFields(this.position, this.color, [[-1, -1], [-1, 1], [1, -1], [1, 1]])
 
     }
 }
@@ -173,7 +130,7 @@ export class Rook extends ChessPiece {
     getAvailableSpace(): string[] {
 
         // Свободное поле или атака
-        return this.getNewFields([[-1, 0], [1, 0], [0, -1], [0, 1]])
+        return ChessBoardClass.getNewFields(this.position, this.color, [[-1, 0], [1, 0], [0, -1], [0, 1]])
     }
 }
 
@@ -185,8 +142,8 @@ export class Queen extends ChessPiece {
 
         const result: string[] = []
 
-        result.push(...this.getNewFields([[-1, -1], [-1, 1], [1, -1], [1, 1]]))
-        result.push(...this.getNewFields([[-1, 0], [1, 0], [0, -1], [0, 1]]))
+        result.push(...ChessBoardClass.getNewFields(this.position, this.color, [[-1, -1], [-1, 1], [1, -1], [1, 1]]))
+        result.push(...ChessBoardClass.getNewFields(this.position, this.color, [[-1, 0], [1, 0], [0, -1], [0, 1]]))
 
         return result
     }
@@ -202,7 +159,7 @@ export class King extends ChessPiece {
 
         [[-1, -1], [-1, 1], [1, -1], [1, 1], [-1, 0], [1, 0], [0, -1], [0, 1]].forEach(([addColumn, addRow]) => {
 
-            const [piece, newPiecePosition] = this.getNewField(addColumn, addRow)
+            const [piece, newPiecePosition] = ChessBoardClass.getNewField(this.position, addColumn, addRow)
 
             if ((piece !== undefined && ! piece) || (piece && piece.color !== this.color)) {
                 result.push(newPiecePosition)

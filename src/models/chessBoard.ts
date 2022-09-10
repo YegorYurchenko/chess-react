@@ -1,4 +1,4 @@
-import { EChessBoardPieces, EPieceColors } from '../extends/enums'
+import { EChessBoardPieces, EChessPieceFields, EPieceColors } from '../extends/enums'
 import { Bishop, ChessPiece, King, Knight, Pawn, Queen, Rook } from './chessPieces'
 
 export interface IChessPieces {
@@ -21,6 +21,50 @@ export class ChessBoardClass {
 
         const chessBoardObjectTemporary = chessBoardArray.reduce((curr, next) => curr.concat(next))
         chessBoardObjectTemporary.forEach(field => ChessBoardClass.chessBoardObject[field.chessPosition] = field.chessPiece)
+    }
+
+    /** Получить данные поля */
+    static getNewField(position: string, addColumn: number, addRow: number): [ChessPiece | null, string] {
+
+        const [column, row] = position.split('')
+
+        const newColumn = EChessPieceFields[EChessPieceFields[column] + addColumn]
+        const newRow = Number(row) + addRow
+
+        const newPiecePosition = `${newColumn}${newRow}`
+        const newPiece: ChessPiece | null = ChessBoardClass.chessBoardObject[newPiecePosition]
+
+        return [newPiece, newPiecePosition]
+    }
+
+    /** Получить данные нескольких полей */
+    static getNewFields(position: string, color: EPieceColors, movePositions: number[][]): string[] {
+
+        const result: string[] = []
+
+        movePositions.forEach(([addColumn, addRow]) => {
+
+            let available = true
+            let [updatedAddColumn, updatedAddRow] = [addColumn, addRow]
+
+            do {
+                const [piece, newPiecePosition] = this.getNewField(position, updatedAddColumn, updatedAddRow)
+
+                if (piece !== undefined && ! piece) {
+                    result.push(newPiecePosition)
+                    updatedAddColumn += addColumn
+                    updatedAddRow += addRow
+                } else if (piece && piece.color !== color) {
+                    result.push(newPiecePosition)
+                    available = false
+                } else {
+                    available = false
+                }
+
+            } while (available)
+        })
+
+        return result
     }
 }
 
